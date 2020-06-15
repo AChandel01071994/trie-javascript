@@ -4,7 +4,7 @@ class Node {
             this.endOfWord = false;
         }
     }
-    class Trie {
+class Trie {
         constructor(){
             this.root = new Node();
         }
@@ -74,14 +74,14 @@ class Node {
         }
 
         prefixSearchList(){
-            
+
         }
 
         prefixSearchCount(){
-            
+
         }
 
         searchWords(wordList, paragraph){
             // return words that are in the list
         }
-    }
+}
