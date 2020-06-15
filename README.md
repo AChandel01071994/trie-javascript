@@ -1,2 +1,2 @@
-# trie-javascript
+# Trie-javascript
 Trie Implementation in Javascript
