@@ -4,7 +4,8 @@ class Node {
             this.chars = new Map();
             this.endOfWord = false;
         }
-    }
+}
+
 class Trie {
     constructor(){
         this.root = new Node();
