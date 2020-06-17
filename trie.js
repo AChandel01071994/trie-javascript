@@ -123,14 +123,40 @@ class Trie {
         return isDeleted;
     }
 
-    prefixSearchList(){
+    /*
+    * Returns all words starting with given prefix
+    */
+    prefixSearchList(prefix){
+        const result = [];
+        let current = this.root;
+        
+        // traverse to the child node of last character
+        for(let char of prefix){
+            // return empty array if char does not exist
+            if(!current.chars.has(char)) return result;
+            current = current.chars.get(char);
+        }
 
+        // helper fn for recursion
+        const helper = (node, prefixArr) => {
+            if(node.endOfWord){
+                result.push(prefixArr.slice());
+            }
+            for(let char of node.chars.keys()){
+                prefixArr.push(char);
+                helper(node.chars.get(char), prefixArr)
+                prefixArr.pop();
+            }
+        }
+        // invoke helper fn
+        helper(current, prefix.split(''));
+        // join all the chars
+        return result.map(chars => chars.join(''));
     }
 
-    prefixSearchCount(){
-
-    }
-
+    /*
+    * Returns list of words that exists in paragraph
+    */
     searchWords(wordList, paragraph){
         // return words that are in the list
     }
