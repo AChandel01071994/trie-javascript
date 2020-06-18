@@ -157,8 +157,63 @@ class Trie {
 
     /*
     * Returns list of words that exists in paragraph
+    * Edge case for which this algorithm fails:  when a searchTerms starts with word(s) which are part of another searchTerm, solution is
+    * to check prefixtree from the begining for each word of paragraph or use other effiecient solution like regex
     */
-    searchWords(wordList, paragraph){
-        // return words that are in the list
+    searchWords(searchTerms, paragraph){
+        // working example:
+        // searchTerms: ["rule of", "fight club is", "that", "existence is pain", "we do talk"]
+        // paragraph: "first rule of fight club is that we do not talk about fight club" 
+        // output: ["rule of", "fight club is", "that"]
+        
+        // Edge case example which fails:
+        // searchTerms: [ "rule", "rule of", "fight club is", "that", "existence is pain"]
+        // paragraph: "first rule of fight club is that we do not talk about fight club"
+        // Expected output: ["rule", "rule of" "fight club is", "that"]
+        // output: ["rule", "fight club is", "that"]
+
+        if(searchTerms.length === 0 || !paragraph) return [];
+
+        let current = this.root, result = [], i = 0, tempArr = [];
+        // break paragraph into words
+        paragraph = paragraph.split(' ');
+        
+        // create prefix tree (trie) for searchTerms 
+        searchTerms.forEach((words) => {
+           this.insert(words.split(' '));
+        });
+
+        // go through each word of paragraph while keep revisiting the trie
+        while(i < paragraph.length){
+            let word = paragraph[i];
+            // if endofWord is true save tempArr into result with spaces , reset tempArr, reset current 
+            if(current.endOfWord){
+                result.push(tempArr.join(' '));
+                tempArr.length = 0;
+                current = this.root;
+            }
+            // if match, increase both trie & paragraph (i) , push into tempArr
+            if(current.chars.has(word)){
+                i++;
+                current = current.chars.get(word);
+                tempArr.push(word);
+            }
+            // if missmatch
+            else {
+                // if current is root; increase paragraph (i)
+                if(current === this.root){
+                    i++;
+                } else {
+                    // reset trie to root, reset tempArr, do not increase paragraph (i)
+                    current = this.root;
+                    tempArr.length = 0;
+                }
+                
+            }
+        }
+        // reset root
+        this.root = new Node();
+        // join words matched with space & return result
+        return result;
     }
 }
