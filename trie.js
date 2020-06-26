@@ -170,7 +170,7 @@ class Trie {
     * Input: text = "bananana", words = ["ban","ana","nana"]
     * Output: [[0,2],[1,3],[3,5],[5,7],[2,5],[4,7]]
     */
-    searchWords(searchTerms, text){
+    indexPairs(searchTerms, text){
         if(searchTerms.length === 0 || !text) return [];
         let pairs = [];
          // create trie of searchTerms- O (L * K)
