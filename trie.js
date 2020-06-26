@@ -156,64 +156,37 @@ class Trie {
     }
 
     /*
-    * Returns list of words that exists in paragraph
-    * Edge case for which this algorithm fails:  when a searchTerms starts with word(s) which are part of another searchTerm, solution is
-    * to check prefixtree from the begining for each word of paragraph or use other effiecient solution like regex
+    * Returns index pair of matching strings (assuming all in lowercase)
+    * Complexity : 
+    * This may not be the best approach but it's better than Brute force(there are other better solutions like - KMP pattern matching algo/suffix Tree/suffix Array)
+    * but prefix tree performs better than brute force & close to KMP/suffix Tree/suffix Array in case of a lot of search terms
+    * Complexity(KMP) : O (T + L) * K 
+    * Complexity(BruteForce) : O (T * L) * K 
+    * Complexity(Prefix Tree/Trie) : O ((L * K) + (T * L))
+    * T -> length of text, L -> max length of searchTerm, K -> # of searchTerms
+    * Examples:
+    * Input: text = "startedfromthebottomnowwehere", words = ["from","omnow","nowwehere"]
+    * Output: [[7,10],[18,22],[20,28]]
+    * Input: text = "bananana", words = ["ban","ana","nana"]
+    * Output: [[0,2],[1,3],[3,5],[5,7],[2,5],[4,7]]
     */
-    searchWords(searchTerms, paragraph){
-        // working example:
-        // searchTerms: ["rule of", "fight club is", "that", "existence is pain", "we do talk"]
-        // paragraph: "first rule of fight club is that we do not talk about fight club" 
-        // output: ["rule of", "fight club is", "that"]
-        
-        // Edge case example which fails:
-        // searchTerms: [ "rule", "rule of", "fight club is", "that", "existence is pain"]
-        // paragraph: "first rule of fight club is that we do not talk about fight club"
-        // Expected output: ["rule", "rule of" "fight club is", "that"]
-        // output: ["rule", "fight club is", "that"]
+    searchWords(searchTerms, text){
+        if(searchTerms.length === 0 || !text) return [];
+        let pairs = [];
+         // create trie of searchTerms- O (L * K)
+         for(let term of searchTerms) this.insert(term);
 
-        if(searchTerms.length === 0 || !paragraph) return [];
-
-        let current = this.root, result = [], i = 0, tempArr = [];
-        // break paragraph into words
-        paragraph = paragraph.split(' ');
-        
-        // create prefix tree (trie) for searchTerms 
-        searchTerms.forEach((words) => {
-           this.insert(words.split(' '));
-        });
-
-        // go through each word of paragraph while keep revisiting the trie
-        while(i < paragraph.length){
-            let word = paragraph[i];
-            // if endofWord is true save tempArr into result with spaces , reset tempArr, reset current 
-            if(current.endOfWord){
-                result.push(tempArr.join(' '));
-                tempArr.length = 0;
-                current = this.root;
-            }
-            // if match, increase both trie & paragraph (i) , push into tempArr
-            if(current.chars.has(word)){
-                i++;
-                current = current.chars.get(word);
-                tempArr.push(word);
-            }
-            // if missmatch
-            else {
-                // if current is root; increase paragraph (i)
-                if(current === this.root){
-                    i++;
-                } else {
-                    // reset trie to root, reset tempArr, do not increase paragraph (i)
-                    current = this.root;
-                    tempArr.length = 0;
-                }
-                
-            }
-        }
-        // reset root
-        this.root = new Node();
-        // join words matched with space & return result
-        return result;
+         // visit trie for each character of text & find the matches
+         for(let startIdx = 0; startIdx < text.length; startIdx++) {
+             let currentIdx = startIdx;
+             let node = this.root;
+             // visit trie until text ends or there is a mismatch
+             while(currentIdx < text.length && node.chars.has(text[currentIdx])){
+                 node = node.chars.get(text[currentIdx]);
+                 if(node.endOfWord) pairs.push([startIdx, currentIdx]);
+                 currentIdx++;
+             }
+         }
+         return pairs;
     }
 }
