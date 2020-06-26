@@ -156,7 +156,7 @@ class Trie {
     }
 
     /*
-    * Returns index pair of matching strings (assuming all in lowercase)
+    * Returns index pairs of matching strings (assuming all in lowercase)
     * Complexity : 
     * This may not be the best approach but it's better than Brute force(there are other better solutions like - KMP pattern matching algo/suffix Tree/suffix Array)
     * but prefix tree performs better than brute force & close to KMP/suffix Tree/suffix Array in case of a lot of search terms
