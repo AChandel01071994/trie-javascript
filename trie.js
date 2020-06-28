@@ -1,4 +1,3 @@
-
 class Node {
         constructor(){
             this.chars = new Map();
@@ -188,5 +187,20 @@ class Trie {
              }
          }
          return pairs;
+    }
+
+    longestCommonPrefix(words){
+        let root = this.root;
+        // O (L*K), L= max len of char, K = count of words
+        for (let word of words) this.insert(word);
+        
+        let lcp = '';
+        // fetch longestCommonPrefix
+        while(root.chars.size === 1){
+            const char = root.chars.keys().next().value;
+            lcp += char;
+            root = root.chars.get(char);
+        }
+        return lcp;
     }
 }
